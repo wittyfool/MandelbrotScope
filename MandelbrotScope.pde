@@ -22,15 +22,15 @@ int mandel(double rr, double ii) {
   int cc;
   double zr=0, zi=0;
   double zr2, zi2;
-
+  
   for (cc=0; cc<countMax; cc++) {
     zr2 = zr * zr;
-    if (zr2 > 2.0) break;
+    if (zr2 > 4.0) break;
     zi2 = zi * zi;
-    if (zi2 > 2.0) break;
+    if (zi2 > 4.0) break;
     zi = 2.0 * zr * zi + ii;
     zr = zr2 - zi2 + rr;
-    if ((zr2+zi2) > 2.0) break;
+    if ((zr2+zi2) > 4.0) break;
   }
   if (cc == countMax) {
     return 0;
@@ -61,23 +61,23 @@ void myThread() {
       countOverHalf = 0;
       countOverThreeFourth = 0;
       for (mod=0; mod<16; mod++) {
-        if(redraw) break;
-        for (py=0; py<(600-16); py+=16) {
+        if (redraw) break;
+        for (py=0; py<600; py+=16) {
+          if ((py + order16[mod]) >= 600) continue;
           im = y + (double)(300 - py - order16[mod]) * scale / 300.0;
           for (px=0; px<600; px++) {
             re = x + (double)(px - 300) * scale /300.0;
             count = mandel(re, im);
             c = count == 0 ? color(0, 0, 0) : color(count % 200, 100, 100);
             pixels[(py + order16[mod])*800+px] = int(c);
-            if(count > countMax/2){
+
+            if (count > countMax/2) {
               countOverHalf++;
-          
             }
-            if(count > countMax*3/4){
+            if (count > countMax*3/4) {
               countOverThreeFourth++;
             }
-            
-        }
+          }
         }
         updatePixels();
       }
@@ -87,9 +87,9 @@ void myThread() {
 
 void drawInfo() {
   float per;
-  
+
   per = (float)countOverThreeFourth * 100.0 / (float)(800*800);
-  
+
   fill(0, 0, 0);
   rect(600, 0, 200, 600);
   fill(0, 0, 100);
