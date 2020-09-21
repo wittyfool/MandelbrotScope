@@ -5,6 +5,7 @@ int countOverHalf = 0;
 int countOverThreeFourth = 0;
 double x=0, y=0, scale=4.0;
 boolean redraw = false;
+int order16[] = { 0, 8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15 };
 
 void setup() {
   size(800, 600);
@@ -61,13 +62,13 @@ void myThread() {
       countOverThreeFourth = 0;
       for (mod=0; mod<16; mod++) {
         if(redraw) break;
-        for (py=0; py<(600-mod); py+=16) {
-          im = y + (double)(300 - py-mod) * scale / 300.0;
+        for (py=0; py<(600-16); py+=16) {
+          im = y + (double)(300 - py - order16[mod]) * scale / 300.0;
           for (px=0; px<600; px++) {
             re = x + (double)(px - 300) * scale /300.0;
             count = mandel(re, im);
             c = count == 0 ? color(0, 0, 0) : color(count % 200, 100, 100);
-            pixels[(py+mod)*800+px] = int(c);
+            pixels[(py + order16[mod])*800+px] = int(c);
             if(count > countMax/2){
               countOverHalf++;
           
